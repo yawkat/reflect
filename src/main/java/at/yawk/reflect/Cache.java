@@ -1,0 +1,64 @@
+package at.yawk.reflect;
+
+import java.lang.ref.Reference;
+import java.lang.ref.SoftReference;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.*;
+
+/**
+ * @author yawkat
+ */
+class Cache {
+    private static final Map<Class<?>, Reference<Method[]>> methodCache = new WeakHashMap<>();
+
+    static synchronized Method[] getMethods(Class<?> clazz) {
+        Reference<Method[]> cached = methodCache.get(clazz);
+        if (cached != null) {
+            Method[] methods = cached.get();
+            if (methods != null) {
+                return methods.clone();
+            }
+        }
+        List<Method> l = new ArrayList<>();
+        collectDeclaredMethods(clazz, l);
+        // We should probably use a weak ref on the methods so they don't keep their declaring
+        // classes from being collected, but the overhead of an array of weak refs would be too
+        // high. We also can't weak ref the array itself as it would be collected immediately.
+        // Instead, we will settle for a soft ref for now.
+        Method[] methods = l.toArray(new Method[l.size()]);
+        methodCache.put(clazz, new SoftReference<>(methods));
+        return methods.clone();
+    }
+
+    private static synchronized void collectDeclaredMethods(Class<?> clazz, List<Method> into) {
+        if (clazz == null) { return; } // recursion end
+
+        int foundBefore = into.size();
+        outer:
+        for (Method method : clazz.getDeclaredMethods()) {
+            for (int i = 0; i < foundBefore; i++) {
+                Method other = into.get(i);
+                if (!Modifier.isPrivate(other.getModifiers()) &&
+                    other.getName().equals(method.getName()) &&
+                    other.getReturnType().isAssignableFrom(method.getReturnType()) &&
+                    Arrays.equals(other.getParameterTypes(), method.getParameterTypes())) {
+                    continue outer;
+                }
+            }
+            if (!method.isAccessible()) {
+                try {
+                    method.setAccessible(true);
+                } catch (SecurityException e) {
+                    // silently fail and don't add to result list
+                    continue;
+                }
+            }
+            into.add(method);
+        }
+        collectDeclaredMethods(clazz.getSuperclass(), into);
+        for (Class<?> iface : clazz.getInterfaces()) {
+            collectDeclaredMethods(iface, into);
+        }
+    }
+}
