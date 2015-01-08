@@ -13,6 +13,10 @@ public class DelegateMethods<T, R> implements Methods<T, R> {
         this.handle = handle;
     }
 
+    protected Methods<T, R> getHandle() {
+        return handle;
+    }
+
     protected Methods<T, R> wrap(Methods<T, R> methods) {
         return methods == handle ? this : new DelegateMethods<>(methods);
     }
