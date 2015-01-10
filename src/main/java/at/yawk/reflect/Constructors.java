@@ -11,16 +11,6 @@ public interface Constructors<T> extends Members<T> {
         return new ConstructorsImpl<>(clazz);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Constructors<T> ofInstance(T obj) {
-        return Constructors.<T>of((Class) obj.getClass()).on(obj);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T> Constructors<T> ofStatic(Class<T> clazz) {
-        return Constructors.<T>of(clazz).statics();
-    }
-
     /**
      * Remove methods without the given modifier or without all of the given modifiers.
      */
@@ -66,18 +56,6 @@ public interface Constructors<T> extends Members<T> {
      */
     @Override
     Constructors<T> finish();
-
-    /**
-     * Get static methods of this class.
-     */
-    @Override
-    Constructors<T> statics();
-
-    /**
-     * Get instance methods of the given object.
-     */
-    @Override
-    Constructors<T> on(T on);
 
     /**
      * Invoke this method.
