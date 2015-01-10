@@ -84,4 +84,12 @@ public interface Fields<T, R> extends Members<T, R> {
      * Invoke this method.
      */
     R get() throws UncheckedReflectiveOperationException;
+
+    default <NewT> Methods<R, NewT> methods() {
+        return Methods.ofInstance(get());
+    }
+
+    default <NewT> Fields<R, NewT> fields() {
+        return Fields.ofInstance(get());
+    }
 }

@@ -89,4 +89,12 @@ public interface Methods<T, R> extends Members<T, R> {
      * Invoke this method.
      */
     R invoke(Object... args) throws UncheckedReflectiveOperationException;
+
+    default <NewT> Methods<R, NewT> methods(Object... args) {
+        return Methods.ofInstance(invoke(args));
+    }
+
+    default <NewT> Fields<R, NewT> fields(Object... args) {
+        return Fields.ofInstance(invoke(args));
+    }
 }
