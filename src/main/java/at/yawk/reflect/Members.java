@@ -3,22 +3,22 @@ package at.yawk.reflect;
 /**
  * @author yawkat
  */
-public interface Members<T, R> {
-    Members<T, R> name(String name);
+public interface Members<T> {
+    Members<T> name(String name);
 
-    Members<T, R> modifier(int modifier);
+    Members<T> modifier(int modifier);
 
-    Members<T, R> withoutModifier(int modifier);
+    Members<T> withoutModifier(int modifier);
 
-    Members<T, R> mode(SelectionMode selectionMode);
+    Members<T> mode(SelectionMode selectionMode);
 
-    Members<T, R> first();
+    Members<T> first();
 
-    Members<T, R> only();
+    Members<T> only();
 
-    Members<T, R> finish();
+    Members<T> finish();
 
-    Members<T, R> statics();
+    Members<T> statics();
 
-    Members<T, R> on(T on);
+    Members<T> on(T on);
 }

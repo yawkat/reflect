@@ -1,18 +1,15 @@
 package at.yawk.reflect;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
-import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
  * @author yawkat
  */
-abstract class MembersImpl<T, R, M extends Member, S extends MembersImpl<T, R, M, S>>
-        implements Members<T, R> {
+abstract class MembersImpl<T, M extends Member, S extends MembersImpl<T, M, S>>
+        implements Members<T> {
     /*
      * Implementation of the Methods interfaces. Lots of lazy computations.
      */

@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 /**
  * @author yawkat
  */
-class FieldsImpl<T, R> extends MembersImpl<T, R, Field, FieldsImpl<T, R>>
+class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
         implements Fields<T, R> {
     FieldsImpl(Class<?> declaring) {
         super(Cache.getFields(declaring));

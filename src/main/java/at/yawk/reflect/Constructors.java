@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 /**
  * @author yawkat
  */
-public interface Constructors<T> extends Members<T, T> {
+public interface Constructors<T> extends Members<T> {
     public static <T> Constructors<T> of(Class<T> clazz) {
         return new ConstructorsImpl<>(clazz);
     }

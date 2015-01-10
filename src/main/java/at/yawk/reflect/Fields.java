@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 /**
  * @author yawkat
  */
-public interface Fields<T, R> extends Members<T, R> {
+public interface Fields<T, R> extends Members<T> {
     public static <T, R> Fields<T, R> of(Class<T> clazz) {
         return new FieldsImpl<>(clazz);
     }

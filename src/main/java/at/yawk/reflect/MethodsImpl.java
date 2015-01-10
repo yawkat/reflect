@@ -9,7 +9,7 @@ import java.util.NoSuchElementException;
 /**
  * @author yawkat
  */
-class MethodsImpl<T, R> extends MembersImpl<T, R, Method, MethodsImpl<T, R>>
+class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>>
         implements Methods<T, R> {
     public MethodsImpl(Class<?> declaring) {
         super(Cache.getMethods(declaring));
