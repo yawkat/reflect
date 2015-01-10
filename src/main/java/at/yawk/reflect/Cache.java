@@ -2,6 +2,7 @@ package at.yawk.reflect;
 
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -104,5 +105,33 @@ class Cache {
         for (Class<?> iface : clazz.getInterfaces()) { // static fields
             collectDeclaredFields(iface, into);
         }
+    }
+
+    //////////////
+
+    private static final Map<Class<?>, Reference<Constructor<?>[]>> constructorCache = new WeakHashMap<>();
+
+    static synchronized Constructor<?>[] getConstructors(Class<?> clazz) {
+        Reference<Constructor<?>[]> cached = constructorCache.get(clazz);
+        if (cached != null) {
+            Constructor<?>[] methods = cached.get();
+            if (methods != null) {
+                return methods.clone();
+            }
+        }
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        for (Constructor<?> constructor : constructors) {
+            if (!constructor.isAccessible()) {
+                try {
+                    constructor.setAccessible(true);
+                } catch (SecurityException ignored) {}
+            }
+        }
+        // We should probably use a weak ref on the methods so they don't keep their declaring
+        // classes from being collected, but the overhead of an array of weak refs would be too
+        // high. We also can't weak ref the array itself as it would be collected immediately.
+        // Instead, we will settle for a soft ref for now.
+        constructorCache.put(clazz, new SoftReference<>(constructors));
+        return constructors.clone();
     }
 }

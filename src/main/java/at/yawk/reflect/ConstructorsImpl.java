@@ -11,7 +11,7 @@ import java.util.NoSuchElementException;
 class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImpl<T>>
         implements Constructors<T> {
     public ConstructorsImpl(Class<?> declaring) {
-        super(Cache.getMethods(declaring));
+        super(Cache.getConstructors(declaring));
     }
 
     ConstructorsImpl() {}
