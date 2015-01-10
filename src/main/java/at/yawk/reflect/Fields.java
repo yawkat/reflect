@@ -1,92 +1,87 @@
 package at.yawk.reflect;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.function.Predicate;
 
 /**
  * @author yawkat
  */
-public interface Methods<T, R> extends Members<T, R> {
-    public static <T, R> Methods<T, R> of(Class<T> clazz) {
-        return new MethodsImpl<>(clazz);
+public interface Fields<T, R> extends Members<T, R> {
+    public static <T, R> Fields<T, R> of(Class<T> clazz) {
+        return new FieldsImpl<>(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, R> Methods<T, R> ofInstance(T obj) {
-        return Methods.<T, R>of((Class) obj.getClass()).on(obj);
+    public static <T, R> Fields<T, R> ofInstance(T obj) {
+        return Fields.<T, R>of((Class) obj.getClass()).on(obj);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, R> Methods<T, R> ofStatic(Class<T> clazz) {
-        return Methods.<T, R>of(clazz).statics();
+    public static <T, R> Fields<T, R> ofStatic(Class<T> clazz) {
+        return Fields.<T, R>of(clazz).statics();
     }
 
     /**
      * Only keep methods with the given name (case-sensitive).
      */
     @Override
-    Methods<T, R> name(String name);
+    Fields<T, R> name(String name);
 
     /**
      * Remove methods without the given modifier or without all of the given modifiers.
      */
     @Override
-    Methods<T, R> modifier(int modifier);
+    Fields<T, R> modifier(int modifier);
 
     /**
      * Remove methods with the given modifier or one of the given modifiers.
      */
     @Override
-    Methods<T, R> withoutModifier(int modifier);
+    Fields<T, R> withoutModifier(int modifier);
 
     /**
      * Filter the methods to match the given predicate.
      */
-    Methods<T, R> match(Predicate<Method> predicate);
+    Fields<T, R> match(Predicate<Field> predicate);
 
     /**
-     * Set the mode by which to select methods in #invoke.
+     * Set the mode by which to select fields in #get.
      */
     @Override
-    Methods<T, R> mode(SelectionMode selectionMode);
+    Fields<T, R> mode(SelectionMode selectionMode);
 
     /**
      * mode(SelectionMode.FIRST)
      */
     @Override
-    Methods<T, R> first();
-
-    /**
-     * mode(SelectionMode.ALL)
-     */
-    Methods<T, R> all();
+    Fields<T, R> first();
 
     /**
      * mode(SelectionMode.ONLY)
      */
     @Override
-    Methods<T, R> only();
+    Fields<T, R> only();
 
     /**
      * Make this object immutable. Subsequent calls will yield a copy of this object and will not modify this object.
      */
     @Override
-    Methods<T, R> finish();
+    Fields<T, R> finish();
 
     /**
      * Get static methods of this class.
      */
     @Override
-    Methods<T, R> statics();
+    Fields<T, R> statics();
 
     /**
      * Get instance methods of the given object.
      */
     @Override
-    Methods<T, R> on(T on);
+    Fields<T, R> on(T on);
 
     /**
      * Invoke this method.
      */
-    R invoke(Object... args) throws UncheckedReflectiveOperationException;
+    R get() throws UncheckedReflectiveOperationException;
 }
