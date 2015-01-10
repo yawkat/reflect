@@ -33,7 +33,7 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
         case ALL:
             T returnValue = null;
             for (Member constructor : matching) {
-                returnValue = ((Constructors<T>) constructor).invoke(args);
+                returnValue = newInstance((Constructor<T>) constructor, args);
             }
             return returnValue;
         case ONLY:
@@ -43,9 +43,17 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
             // same behaviour as first apart from this
         case FIRST:
             if (matchingLength < 1) { throw new NoSuchElementException("Constructor not found"); }
-            return ((Constructors<T>) matching[0]).invoke(args);
+            return newInstance((Constructor<T>) matching[0], args);
         default:
             throw new UnsupportedOperationException("Unsupported selection mode " + selectionMode);
+        }
+    }
+
+    private T newInstance(Constructor<T> constructor, Object[] args) {
+        try {
+            return constructor.newInstance(args);
+        } catch (ReflectiveOperationException e) {
+            throw new UncheckedReflectiveOperationException(e);
         }
     }
 }
