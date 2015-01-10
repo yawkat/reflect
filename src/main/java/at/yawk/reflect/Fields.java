@@ -12,13 +12,13 @@ public interface Fields<T, R> extends Members<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, R> Fields<T, R> ofInstance(T obj) {
-        return Fields.<T, R>of((Class) obj.getClass()).on(obj);
+    public static <R> Fields<?, R> ofInstance(Object obj) {
+        return Fields.<Object, R>of((Class) obj.getClass()).on(obj);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, R> Fields<T, R> ofStatic(Class<T> clazz) {
-        return Fields.<T, R>of(clazz).statics();
+    public static <R> Fields<?, R> ofStatic(Class<?> clazz) {
+        return Fields.<Object, R>of((Class) clazz).statics();
     }
 
     /**
@@ -85,11 +85,11 @@ public interface Fields<T, R> extends Members<T> {
      */
     R get() throws UncheckedReflectiveOperationException;
 
-    default <NewT> Methods<R, NewT> methods() {
+    default <NewT> Methods<?, NewT> methods() {
         return Methods.ofInstance(get());
     }
 
-    default <NewT> Fields<R, NewT> fields() {
+    default <NewT> Fields<?, NewT> fields() {
         return Fields.ofInstance(get());
     }
 }
