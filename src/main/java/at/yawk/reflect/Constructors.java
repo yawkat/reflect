@@ -63,10 +63,10 @@ public interface Constructors<T> extends Members<T> {
     T invoke(Object... args) throws UncheckedReflectiveOperationException;
 
     default <NewT> Methods<?, NewT> methods(Object... args) {
-        return Methods.ofInstance(invoke(args));
+        return Methods.of(invoke(args));
     }
 
     default <NewT> Fields<?, NewT> fields(Object... args) {
-        return Fields.ofInstance(invoke(args));
+        return Fields.of(invoke(args));
     }
 }

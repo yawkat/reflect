@@ -28,9 +28,10 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
         return super.mode(selectionMode);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public R get() throws UncheckedReflectiveOperationException {
-        return get(handle);
+    public <SubR extends R> SubR get() throws UncheckedReflectiveOperationException {
+        return (SubR) get(handle);
     }
 
     private R get(T instance) {

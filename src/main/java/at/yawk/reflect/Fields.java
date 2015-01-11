@@ -7,18 +7,18 @@ import java.util.function.Predicate;
  * @author yawkat
  */
 public interface Fields<T, R> extends Members<T> {
-    public static <T, R> Fields<T, R> of(Class<T> clazz) {
+    public static <T, R> Fields<T, R> ofType(Class<T> clazz) {
         return new FieldsImpl<>(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public static <R> Fields<?, R> ofInstance(Object obj) {
-        return Fields.<Object, R>of((Class) obj.getClass()).on(obj);
+    public static <R> Fields<?, R> of(Object obj) {
+        return Fields.<Object, R>ofType((Class) obj.getClass()).on(obj);
     }
 
     @SuppressWarnings("unchecked")
-    public static <R> Fields<?, R> ofStatic(Class<?> clazz) {
-        return Fields.<Object, R>of((Class) clazz).statics();
+    public static <R> Fields<?, R> of(Class<?> clazz) {
+        return Fields.<Object, R>ofType((Class) clazz).statics();
     }
 
     /**
@@ -83,13 +83,15 @@ public interface Fields<T, R> extends Members<T> {
     /**
      * Invoke this method.
      */
-    R get() throws UncheckedReflectiveOperationException;
+    // using another type parameter here so we can don't have to state type params
+    // explicitly on construction.
+    <Return extends R> Return get() throws UncheckedReflectiveOperationException;
 
     default <NewT> Methods<?, NewT> methods() {
-        return Methods.ofInstance(get());
+        return Methods.of((Object) get());
     }
 
     default <NewT> Fields<?, NewT> fields() {
-        return Fields.ofInstance(get());
+        return Fields.of((Object) get());
     }
 }

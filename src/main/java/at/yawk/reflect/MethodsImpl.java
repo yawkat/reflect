@@ -27,9 +27,10 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>>
         return mode(SelectionMode.ALL);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public R invoke(Object... args) {
-        return invoke(handle, args);
+    public <SubR extends R> SubR invoke(Object... args) {
+        return (SubR) invoke(handle, args);
     }
 
     private R invoke(T instance, Object... args) {

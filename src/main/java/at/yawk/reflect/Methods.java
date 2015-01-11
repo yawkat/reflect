@@ -7,18 +7,18 @@ import java.util.function.Predicate;
  * @author yawkat
  */
 public interface Methods<T, R> extends Members<T> {
-    public static <T, R> Methods<T, R> of(Class<T> clazz) {
+    public static <T, R> Methods<T, R> ofType(Class<T> clazz) {
         return new MethodsImpl<>(clazz);
     }
 
     @SuppressWarnings("unchecked")
-    public static <R> Methods<?, R> ofInstance(Object obj) {
-        return Methods.<Object, R>of((Class) obj.getClass()).on(obj);
+    public static <R> Methods<?, R> of(Object obj) {
+        return Methods.<Object, R>ofType((Class) obj.getClass()).on(obj);
     }
 
     @SuppressWarnings("unchecked")
-    public static <R> Methods<?, R> ofStatic(Class<?> clazz) {
-        return Methods.<Object, R>of((Class) clazz).statics();
+    public static <R> Methods<?, R> of(Class<?> clazz) {
+        return Methods.<Object, R>ofType((Class) clazz).statics();
     }
 
     /**
@@ -88,13 +88,15 @@ public interface Methods<T, R> extends Members<T> {
     /**
      * Invoke this method.
      */
-    R invoke(Object... args) throws UncheckedReflectiveOperationException;
+    // using another type parameter here so we can don't have to state type params
+    // explicitly on construction.
+    <Return extends R> Return invoke(Object... args) throws UncheckedReflectiveOperationException;
 
     default <NewT> Methods<?, NewT> methods(Object... args) {
-        return Methods.ofInstance(invoke(args));
+        return Methods.of((Object) invoke(args));
     }
 
     default <NewT> Fields<?, NewT> fields(Object... args) {
-        return Fields.ofInstance(invoke(args));
+        return Fields.of((Object) invoke(args));
     }
 }
