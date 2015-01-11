@@ -6,34 +6,13 @@ import java.util.function.Predicate;
 /**
  * @author yawkat
  */
-public class DelegateMethods<T, R> implements Methods<T, R> {
-    private final Methods<T, R> handle;
-
+public class DelegateMethods<T, R> extends Delegate<T, Methods<T, R>> implements Methods<T, R> {
     public DelegateMethods(Methods<T, R> handle) {
-        this.handle = handle;
+        super(handle);
     }
 
-    protected Methods<T, R> getHandle() {
-        return handle;
-    }
-
-    protected Methods<T, R> wrap(Methods<T, R> methods) {
-        return methods == handle ? this : new DelegateMethods<>(methods);
-    }
-
-    @Override
-    public Methods<T, R> name(String name) {
-        return wrap(handle.name(name));
-    }
-
-    @Override
-    public Methods<T, R> modifier(int modifier) {
-        return wrap(handle.modifier(modifier));
-    }
-
-    @Override
-    public Methods<T, R> withoutModifier(int modifier) {
-        return wrap(handle.withoutModifier(modifier));
+    protected DelegateMethods<T, R> wrapOther(Methods<T, R> methods) {
+        return new DelegateMethods<>(methods);
     }
 
     @Override
@@ -42,42 +21,22 @@ public class DelegateMethods<T, R> implements Methods<T, R> {
     }
 
     @Override
-    public Methods<T, R> mode(SelectionMode selectionMode) {
-        return wrap(handle.mode(selectionMode));
-    }
-
-    @Override
-    public Methods<T, R> first() {
-        return wrap(handle.first());
-    }
-
-    @Override
     public Methods<T, R> all() {
         return wrap(handle.all());
     }
 
     @Override
-    public Methods<T, R> only() {
-        return wrap(handle.only());
-    }
-
-    @Override
-    public Methods<T, R> finish() {
-        return wrap(handle.finish());
-    }
-
-    @Override
-    public Methods<T, R> statics() {
-        return wrap(handle.statics());
-    }
-
-    @Override
-    public Methods<T, R> on(T on) {
-        return wrap(handle.on(on));
-    }
-
-    @Override
-    public R invoke(Object... args) throws UncheckedReflectiveOperationException {
+    public <Return extends R> Return invoke(Object... args) throws UncheckedReflectiveOperationException {
         return handle.invoke(args);
+    }
+
+    @Override
+    public <NewT> Methods<?, NewT> methods(Object... args) {
+        return wrapMethods(invoke(args));
+    }
+
+    @Override
+    public <NewT> Fields<?, NewT> fields(Object... args) {
+        return wrapFields(invoke(args));
     }
 }
