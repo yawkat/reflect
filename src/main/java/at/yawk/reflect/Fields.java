@@ -87,6 +87,8 @@ public interface Fields<T, R> extends Members<T> {
     // explicitly on construction.
     <Return extends R> Return get() throws UncheckedReflectiveOperationException;
 
+    void set(R value) throws UncheckedReflectiveOperationException;
+
     default <NewT> Methods<?, NewT> methods() {
         return Methods.of((Object) get());
     }

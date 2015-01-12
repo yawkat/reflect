@@ -34,6 +34,31 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
         return (SubR) get(handle);
     }
 
+    @Override
+    public void set(R value) throws UncheckedReflectiveOperationException {
+        switch (selectionMode) {
+        case ONLY:
+            if (matchingLength > 1) {
+                throw new IllegalStateException("Too many fields found: " + Arrays.toString(matching));
+            }
+            // same behaviour as first apart from this
+        case FIRST:
+            if (matchingLength < 1) { throw new NoSuchElementException("Field not found"); }
+            doSet((Field) matching[0], handle, value);
+            break;
+        default:
+            throw new UnsupportedOperationException("Unsupported selection mode " + selectionMode);
+        }
+    }
+
+    private void doSet(Field field, T on, R value) {
+        try {
+            field.set(on, value);
+        } catch (IllegalAccessException e) {
+            throw new UncheckedReflectiveOperationException(e);
+        }
+    }
+
     private R get(T instance) {
         switch (selectionMode) {
         case ONLY:

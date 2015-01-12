@@ -27,6 +27,11 @@ public class DelegateFields<T, R> extends Delegate<T, Fields<T, R>> implements F
     }
 
     @Override
+    public void set(R value) throws UncheckedReflectiveOperationException {
+        handle.set(value);
+    }
+
+    @Override
     public <NewT> Methods<?, NewT> methods() {
         return wrapMethods(get());
     }
