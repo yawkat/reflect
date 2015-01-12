@@ -63,6 +63,11 @@ public interface Fields<T, R> extends Members<T> {
     Fields<T, R> only();
 
     /**
+     * mode(SelectionMode.ALL)
+     */
+    Fields<T, R> all();
+
+    /**
      * Make this object immutable. Subsequent calls will yield a copy of this object and will not modify this object.
      */
     @Override

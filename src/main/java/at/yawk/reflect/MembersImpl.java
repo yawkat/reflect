@@ -152,6 +152,10 @@ abstract class MembersImpl<T, M extends Member, S extends MembersImpl<T, M, S>>
         return mode(SelectionMode.ONLY);
     }
 
+    public S all() {
+        return mode(SelectionMode.ALL);
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public S finish() {

@@ -1,6 +1,7 @@
 package at.yawk.reflect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
@@ -45,6 +46,11 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
         case FIRST:
             if (matchingLength < 1) { throw new NoSuchElementException("Field not found"); }
             doSet((Field) matching[0], handle, value);
+            break;
+        case ALL:
+            for (Member member : matching) {
+                doSet((Field) member, handle, value);
+            }
             break;
         default:
             throw new UnsupportedOperationException("Unsupported selection mode " + selectionMode);
