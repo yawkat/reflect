@@ -1,6 +1,7 @@
 package at.yawk.reflect;
 
 import java.lang.reflect.Field;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -22,6 +23,16 @@ public class DelegateFields<T, R> extends Delegate<T, Fields<T, R>> implements F
     }
 
     @Override
+    public Fields<T, R> all() {
+        return wrap(handle.all());
+    }
+
+    @Override
+    public void eachField(ReflectiveConsumer<Field> consumer) throws UncheckedReflectiveOperationException {
+        handle.eachField(consumer);
+    }
+
+    @Override
     public <Return extends R> Return get() throws UncheckedReflectiveOperationException {
         return handle.get();
     }
@@ -39,5 +50,10 @@ public class DelegateFields<T, R> extends Delegate<T, Fields<T, R>> implements F
     @Override
     public <NewT> Fields<?, NewT> fields() {
         return wrapFields(get());
+    }
+
+    @Override
+    public void each(Consumer<R> consumer) {
+        handle.each(consumer);
     }
 }

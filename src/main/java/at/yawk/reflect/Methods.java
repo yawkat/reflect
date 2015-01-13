@@ -1,6 +1,7 @@
 package at.yawk.reflect;
 
 import java.lang.reflect.Method;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -86,6 +87,11 @@ public interface Methods<T, R> extends Members<T> {
     Methods<T, R> on(T on);
 
     /**
+     * Perform an action on each matched method (independent from SelectionMode).
+     */
+    void eachMethod(ReflectiveConsumer<Method> consumer) throws UncheckedReflectiveOperationException;
+
+    /**
      * Invoke this method.
      */
     // using another type parameter here so we can don't have to state type params
@@ -99,4 +105,10 @@ public interface Methods<T, R> extends Members<T> {
     default <NewT> Fields<?, NewT> fields(Object... args) {
         return Fields.of((Object) invoke(args));
     }
+
+    /**
+     * Perform an action on each methods matched return value after matching it with the given args (independent from
+     * SelectionMode).
+     */
+    void each(Consumer<R> consumer, Object... args);
 }

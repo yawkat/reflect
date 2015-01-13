@@ -28,6 +28,19 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
 
     @SuppressWarnings("unchecked")
     @Override
+    public void eachConstructor(ReflectiveConsumer<Constructor<T>> consumer)
+            throws UncheckedReflectiveOperationException {
+        for (Member member : matching) {
+            try {
+                consumer.consume((Constructor<T>) member);
+            } catch (ReflectiveOperationException e) {
+                throw new UncheckedReflectiveOperationException(e);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
     public T invoke(Object... args) {
         switch (selectionMode) {
         case ALL:

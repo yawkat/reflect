@@ -5,12 +5,12 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * @author yawkat
  */
-class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>>
-        implements Methods<T, R> {
+class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>> implements Methods<T, R> {
     public MethodsImpl(Class<?> declaring) {
         super(Cache.getMethods(declaring));
     }
@@ -22,10 +22,29 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>>
         return new MethodsImpl<>();
     }
 
+    @Override
+    public void eachMethod(ReflectiveConsumer<Method> consumer) throws UncheckedReflectiveOperationException {
+        for (Member member : matching) {
+            try {
+                consumer.consume((Method) member);
+            } catch (ReflectiveOperationException e) {
+                throw new UncheckedReflectiveOperationException(e);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public <SubR extends R> SubR invoke(Object... args) {
         return (SubR) invoke(handle, args);
+    }
+
+    @Override
+    public void each(Consumer<R> consumer, Object... args) {
+        for (Member member : matching) {
+            R value = doInvoke((Method) member, handle, args);
+            consumer.accept(value);
+        }
     }
 
     private R invoke(T instance, Object... args) {

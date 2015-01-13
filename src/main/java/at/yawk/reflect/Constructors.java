@@ -58,7 +58,12 @@ public interface Constructors<T> extends Members<T> {
     Constructors<T> finish();
 
     /**
-     * Invoke this method.
+     * Perform an action on each matched constructor (independent from SelectionMode).
+     */
+    void eachConstructor(ReflectiveConsumer<Constructor<T>> consumer) throws UncheckedReflectiveOperationException;
+
+    /**
+     * Invoke this constructor.
      */
     T invoke(Object... args) throws UncheckedReflectiveOperationException;
 

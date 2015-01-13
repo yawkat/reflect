@@ -4,12 +4,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * @author yawkat
  */
-class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
-        implements Fields<T, R> {
+class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implements Fields<T, R> {
     FieldsImpl(Class<?> declaring) {
         super(Cache.getFields(declaring));
     }
@@ -27,6 +27,17 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
             throw new UnsupportedOperationException("Cannot use SelectionMode.ALL on fields");
         }
         return super.mode(selectionMode);
+    }
+
+    @Override
+    public void eachField(ReflectiveConsumer<Field> consumer) throws UncheckedReflectiveOperationException {
+        for (Member member : matching) {
+            try {
+                consumer.consume((Field) member);
+            } catch (ReflectiveOperationException e) {
+                throw new UncheckedReflectiveOperationException(e);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -54,6 +65,14 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>>
             break;
         default:
             throw new UnsupportedOperationException("Unsupported selection mode " + selectionMode);
+        }
+    }
+
+    @Override
+    public void each(Consumer<R> consumer) {
+        for (Member member : matching) {
+            R value = doGet((Field) member, handle);
+            consumer.accept(value);
         }
     }
 

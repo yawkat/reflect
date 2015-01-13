@@ -1,6 +1,7 @@
 package at.yawk.reflect;
 
 import java.lang.reflect.Field;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -86,6 +87,11 @@ public interface Fields<T, R> extends Members<T> {
     Fields<T, R> on(T on);
 
     /**
+     * Perform an action on each matched field (independent from SelectionMode).
+     */
+    void eachField(ReflectiveConsumer<Field> consumer) throws UncheckedReflectiveOperationException;
+
+    /**
      * Invoke this method.
      */
     // using another type parameter here so we can don't have to state type params
@@ -101,4 +107,9 @@ public interface Fields<T, R> extends Members<T> {
     default <NewT> Fields<?, NewT> fields() {
         return Fields.of((Object) get());
     }
+
+    /**
+     * Perform an action on each matched field value (independent from SelectionMode).
+     */
+    void each(Consumer<R> consumer);
 }
