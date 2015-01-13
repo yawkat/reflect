@@ -2,6 +2,7 @@ package at.yawk.reflect;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.function.Consumer;
@@ -77,10 +78,24 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
     }
 
     private void doSet(Field field, T on, R value) {
+        int modifiers = field.getModifiers();
+        boolean isFinal = Modifier.isFinal(modifiers);
+        if (isFinal) {
+            try {
+                Cache.modifiersField.setInt(field, modifiers & ~Modifier.FINAL);
+            } catch (IllegalAccessException e) {
+                throw new UncheckedReflectiveOperationException(e);
+            }
+        }
         try {
             field.set(on, value);
         } catch (IllegalAccessException e) {
             throw new UncheckedReflectiveOperationException(e);
+        }
+        if (isFinal) {
+            try {
+                Cache.modifiersField.setInt(field, modifiers);
+            } catch (IllegalAccessException ignored) {}
         }
     }
 

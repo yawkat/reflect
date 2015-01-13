@@ -66,6 +66,19 @@ class Cache {
 
     //////////////
 
+    static final Field modifiersField;
+
+    static {
+        Field f;
+        try {
+            f = Field.class.getDeclaredField("modifiers");
+            f.setAccessible(true);
+        } catch (NoSuchFieldException | SecurityException e) {
+            f = null;
+        }
+        modifiersField = f;
+    }
+
     private static final Map<Class<?>, Reference<Field[]>> fieldCache = new WeakHashMap<>();
 
     static synchronized Field[] getFields(Class<?> clazz) {
