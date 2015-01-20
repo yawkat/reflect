@@ -103,7 +103,7 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
         switch (selectionMode) {
         case ONLY:
             if (matchingLength > 1) {
-                throw new IllegalStateException("Too many fields found: " + Arrays.toString(matching));
+                throw new IllegalStateException("Too many fields found: " + this);
             }
             // same behaviour as first apart from this
         case FIRST:

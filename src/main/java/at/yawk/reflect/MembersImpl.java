@@ -183,4 +183,9 @@ abstract class MembersImpl<T, M extends Member, S extends MembersImpl<T, M, S>>
         modifiable.handle = on;
         return modifiable;
     }
+
+    @Override
+    public String toString() {
+        return Arrays.asList(matching).subList(0, matchingLength).toString();
+    }
 }

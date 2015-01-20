@@ -57,7 +57,7 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>> implem
             return returnValue;
         case ONLY:
             if (matchingLength > 1) {
-                throw new IllegalStateException("Too many methods found: " + Arrays.toString(matching));
+                throw new IllegalStateException("Too many methods found: " + this);
             }
             // same behaviour as first apart from this
         case FIRST:

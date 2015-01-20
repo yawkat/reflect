@@ -2,7 +2,6 @@ package at.yawk.reflect;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 /**
@@ -51,7 +50,7 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
             return returnValue;
         case ONLY:
             if (matchingLength > 1) {
-                throw new IllegalStateException("Too many constructors found: " + Arrays.toString(matching));
+                throw new IllegalStateException("Too many constructors found: " + this);
             }
             // same behaviour as first apart from this
         case FIRST:
