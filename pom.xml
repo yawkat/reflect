@@ -8,6 +8,29 @@
     <artifactId>reflect</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <developers>
+        <developer>
+            <id>yawkat</id>
+            <url>http://yawk.at/</url>
+            <name>Jonas Konrad</name>
+            <email>me@yawk.at</email>
+        </developer>
+    </developers>
+
+    <licenses>
+        <license>
+            <name>Mozilla Public License 2.0</name>
+            <url>https://www.mozilla.org/MPL/2.0/</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:git@github.com:yawkat/reflect.git</connection>
+        <developerConnection>scm:git:git@github.com:yawkat/reflect.git</developerConnection>
+        <url>git@github.com:yawkat/reflect.git</url>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
