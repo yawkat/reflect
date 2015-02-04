@@ -30,9 +30,9 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>> implem
 
     @Override
     public void eachMethod(ReflectiveConsumer<Method> consumer) throws UncheckedReflectiveOperationException {
-        for (Member member : matching) {
+        for (int i = 0; i < matchingLength; i++) {
             try {
-                consumer.consume((Method) member);
+                consumer.consume((Method) matching[i]);
             } catch (ReflectiveOperationException e) {
                 throw new UncheckedReflectiveOperationException(e);
             }
@@ -47,8 +47,8 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>> implem
 
     @Override
     public void each(Consumer<R> consumer, Object... args) {
-        for (Member member : matching) {
-            R value = doInvoke((Method) member, handle, args);
+        for (int i = 0; i < matchingLength; i++) {
+            R value = doInvoke((Method) matching[i], handle, args);
             consumer.accept(value);
         }
     }
@@ -57,8 +57,8 @@ class MethodsImpl<T, R> extends MembersImpl<T, Method, MethodsImpl<T, R>> implem
         switch (selectionMode) {
         case ALL:
             R returnValue = null;
-            for (Member method : matching) {
-                returnValue = doInvoke((Method) method, instance, args);
+            for (int i = 0; i < matchingLength; i++) {
+                returnValue = doInvoke((Method) matching[i], instance, args);
             }
             return returnValue;
         case ONLY:

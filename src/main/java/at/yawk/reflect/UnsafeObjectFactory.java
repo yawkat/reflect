@@ -6,15 +6,14 @@
 
 package at.yawk.reflect;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
-import java.util.IdentityHashMap;
-import java.util.Map;
 
 /**
  * @author yawkat
  */
 public class UnsafeObjectFactory {
+    private static final Cloner DEFAULT_CLONER = UnsafeClonerBuilder.builder().defaults().build();
+
     private UnsafeObjectFactory() {}
 
     public static <T> T createInstance(Class<T> type) {
@@ -42,66 +41,10 @@ public class UnsafeObjectFactory {
     }
 
     public static <T> T shallowClone(T object) {
-        return doClone(object, true);
+        return DEFAULT_CLONER.shallowClone(object);
     }
 
-    @SuppressWarnings({ "unchecked", "SuspiciousSystemArraycopy" })
-    private static <T> T doClone(T object, boolean copyFields) {
-        if (object == null) { return null; }
-
-        Class<T> type = (Class<T>) object.getClass();
-
-        T copy;
-        if (type.isArray()) {
-            int length = Array.getLength(object);
-            copy = (T) Array.newInstance(type.getComponentType(), length);
-            if (copyFields) {
-                System.arraycopy(object, 0, copy, 0, length);
-            }
-        } else {
-            copy = allocateInstance(type);
-            if (copyFields) {
-                copyFields(object, copy);
-            }
-        }
-
-        return copy;
-    }
-
-    @SuppressWarnings("unchecked")
     public static <T> T deepClone(T object) {
-        Map<Object, Object> clones = new IdentityHashMap<>();
-
-        cloneDeepWithoutFieldCopy(object, clones);
-
-        clones.forEach((fr, to) -> {
-            if (fr.getClass().isArray()) {
-                int len = Array.getLength(fr);
-                for (int i = 0; i < len; i++) {
-                    Array.set(to, i, clones.get(Array.get(fr, i)));
-                }
-            } else {
-                Fields.of(fr).eachField(f -> f.set(to, clones.get(f.get(fr))));
-            }
-        });
-
-        return (T) clones.get(object);
-    }
-
-    private static void cloneDeepWithoutFieldCopy(Object object, Map<Object, Object> to) {
-        if (object == null) { return; }
-        if (to.containsKey(object)) { return; }
-
-        Object copy = doClone(object, false);
-        to.put(object, copy);
-
-        if (object.getClass().isArray()) {
-            int len = Array.getLength(object);
-            for (int i = 0; i < len; i++) {
-                cloneDeepWithoutFieldCopy(Array.get(object, i), to);
-            }
-        } else {
-            Fields.of(object).each(o -> cloneDeepWithoutFieldCopy(o, to));
-        }
+        return DEFAULT_CLONER.deepClone(object);
     }
 }

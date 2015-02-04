@@ -35,9 +35,9 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
     @Override
     public void eachConstructor(ReflectiveConsumer<Constructor<T>> consumer)
             throws UncheckedReflectiveOperationException {
-        for (Member member : matching) {
+        for (int i = 0; i < matchingLength; i++) {
             try {
-                consumer.consume((Constructor<T>) member);
+                consumer.consume((Constructor<T>) matching[i]);
             } catch (ReflectiveOperationException e) {
                 throw new UncheckedReflectiveOperationException(e);
             }
@@ -50,8 +50,8 @@ class ConstructorsImpl<T> extends MembersImpl<T, Constructor<T>, ConstructorsImp
         switch (selectionMode) {
         case ALL:
             T returnValue = null;
-            for (Member constructor : matching) {
-                returnValue = newInstance((Constructor<T>) constructor, args);
+            for (int i = 0; i < matchingLength; i++) {
+                returnValue = newInstance((Constructor<T>) matching[i], args);
             }
             return returnValue;
         case ONLY:

@@ -38,9 +38,9 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
 
     @Override
     public void eachField(ReflectiveConsumer<Field> consumer) throws UncheckedReflectiveOperationException {
-        for (Member member : matching) {
+        for (int i = 0; i < matchingLength; i++) {
             try {
-                consumer.consume((Field) member);
+                consumer.consume((Field) matching[i]);
             } catch (ReflectiveOperationException e) {
                 throw new UncheckedReflectiveOperationException(e);
             }
@@ -66,8 +66,8 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
             doSet((Field) matching[0], handle, value);
             break;
         case ALL:
-            for (Member member : matching) {
-                doSet((Field) member, handle, value);
+            for (int i = 0; i < matchingLength; i++) {
+                doSet((Field) matching[i], handle, value);
             }
             break;
         default:
@@ -77,8 +77,8 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
 
     @Override
     public void each(Consumer<R> consumer) {
-        for (Member member : matching) {
-            R value = doGet((Field) member, handle);
+        for (int i = 0; i < matchingLength; i++) {
+            R value = doGet((Field) matching[i], handle);
             consumer.accept(value);
         }
     }
