@@ -13,32 +13,66 @@ import sun.misc.Unsafe;
  * @author yawkat
  */
 public class Unsafes {
-    private static final Unsafe UNSAFE;
+    private static final Unsafes instance;
+    private final Unsafe unsafe;
 
-    private Unsafes() {}
+    private Unsafes(Unsafe unsafe) {
+        this.unsafe = unsafe;
+    }
 
     static {
-        Unsafe instance = null;
+        Unsafe unsafe = null;
         try {
             // use theUnsafe if possible
-            instance = Fields.of(Unsafe.class).name("theUnsafe").get();
+            unsafe = Fields.of(Unsafe.class).name("theUnsafe").get();
         } catch (UncheckedReflectiveOperationException e) {
             try {
                 // some platforms don't have theUnsafe, construct instead
-                instance = Constructors.of(Unsafe.class).invoke();
+                unsafe = Constructors.of(Unsafe.class).invoke();
             } catch (UncheckedReflectiveOperationException ignored) {}
         }
-        UNSAFE = instance;
+        instance = unsafe == null ? null : new Unsafes(unsafe);
     }
 
     public static boolean hasUnsafe() {
-        return UNSAFE != null;
+        return instance != null;
     }
 
     public static Unsafe getUnsafe() {
+        return getInstance().unsafe;
+    }
+
+    public static Unsafes of(Unsafe unsafe) {
+        return new Unsafes(unsafe);
+    }
+
+    public static Unsafes getInstance() {
         if (!hasUnsafe()) {
             throw new NoSuchElementException("Unsafe is not available");
         }
-        return UNSAFE;
+        return instance;
+    }
+
+    /**
+     * Change the global security manager (<code>System.security</code>) while bypassing the System.setSecurityManager
+     * permission check.
+     *
+     * Don't do this.
+     */
+    public void setSecurityManager(SecurityManager replacement) throws UncheckedReflectiveOperationException {
+        try {
+            long errOffset = unsafe.staticFieldOffset(System.class.getDeclaredField("err"));
+            long consOffset = unsafe.staticFieldOffset(System.class.getDeclaredField("cons"));
+            // System.security is somewhere between these two
+            long securityOffset = (consOffset + errOffset) / 2;
+            Object systemBase = unsafe.staticFieldBase(System.class.getDeclaredField("cons"));
+
+            // synchronize like setSecurityManager
+            synchronized (System.class) {
+                unsafe.putObjectVolatile(systemBase, securityOffset, replacement);
+            }
+        } catch (ReflectiveOperationException e) {
+            throw new UncheckedReflectiveOperationException(e);
+        }
     }
 }
