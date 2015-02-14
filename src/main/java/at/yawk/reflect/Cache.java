@@ -45,12 +45,11 @@ class Cache {
         int foundBefore = into.size();
         outer:
         for (Method method : clazz.getDeclaredMethods()) {
+            // do not use foreach here, we don't want to loop over elements added in #outer!
+            //noinspection ForLoopReplaceableByForEach
             for (int i = 0; i < foundBefore; i++) {
                 Method other = into.get(i);
-                if (!Modifier.isPrivate(other.getModifiers()) &&
-                    other.getName().equals(method.getName()) &&
-                    other.getReturnType().isAssignableFrom(method.getReturnType()) &&
-                    Arrays.equals(other.getParameterTypes(), method.getParameterTypes())) {
+                if (areEquivalent(other, method)) {
                     continue outer;
                 }
             }
@@ -68,6 +67,17 @@ class Cache {
         for (Class<?> iface : clazz.getInterfaces()) {
             collectDeclaredMethods(iface, into);
         }
+    }
+
+    static boolean areEquivalent(Method base, Method override) {
+        return  // private parent method
+                !Modifier.isPrivate(base.getModifiers()) &&
+                // name
+                base.getName().equals(override.getName()) &&
+                // return type same or more specific
+                base.getReturnType().isAssignableFrom(override.getReturnType()) &&
+                // same parameters
+                Arrays.equals(base.getParameterTypes(), override.getParameterTypes());
     }
 
     //////////////
