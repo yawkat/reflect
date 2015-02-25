@@ -117,4 +117,6 @@ public interface Methods<T, R> extends Members<T> {
      * SelectionMode).
      */
     void each(Consumer<R> consumer, Object... args);
+
+    Method handle();
 }

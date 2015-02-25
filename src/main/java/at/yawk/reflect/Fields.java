@@ -122,4 +122,6 @@ public interface Fields<T, R> extends Members<T> {
      * Perform an action on each matched field value (independent from SelectionMode).
      */
     void each(Consumer<R> consumer);
+
+    Field handle();
 }

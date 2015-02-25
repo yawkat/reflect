@@ -8,6 +8,7 @@ package at.yawk.reflect;
 
 import java.lang.reflect.Member;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -193,5 +194,23 @@ abstract class MembersImpl<T, M extends Member, S extends MembersImpl<T, M, S>>
     @Override
     public String toString() {
         return Arrays.asList(matching).subList(0, matchingLength).toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    public M handle() {
+        switch (selectionMode) {
+        case ONLY:
+            if (matchingLength > 1) {
+                throw new IllegalStateException("Too many matches");
+            }
+        case ALL:
+        case FIRST:
+            if (matchingLength == 0) {
+                throw new NoSuchElementException("No match");
+            }
+            return (M) matching[0];
+        default:
+            throw new UnsupportedOperationException("Unsupported selection mode " + selectionMode);
+        }
     }
 }

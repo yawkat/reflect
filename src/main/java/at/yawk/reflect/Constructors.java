@@ -80,4 +80,6 @@ public interface Constructors<T> extends Members<T> {
     default <NewT> Fields<?, NewT> fields(Object... args) {
         return Fields.of(invoke(args));
     }
+
+    Constructor<T> handle();
 }
