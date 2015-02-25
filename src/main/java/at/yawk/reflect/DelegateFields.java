@@ -34,6 +34,17 @@ public class DelegateFields<T, R> extends Delegate<T, Fields<T, R>> implements F
     }
 
     @Override
+    public Fields<T, R> assignableTo(R value) {
+        return wrap(handle.assignableTo(value));
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <NR extends R> Fields<T, NR> assignableTo(Class<NR> type) {
+        return (Fields<T, NR>) wrap((Fields<T, R>) handle.assignableTo(type));
+    }
+
+    @Override
     public void eachField(ReflectiveConsumer<Field> consumer) throws UncheckedReflectiveOperationException {
         handle.eachField(consumer);
     }

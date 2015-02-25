@@ -7,7 +7,6 @@
 package at.yawk.reflect;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -34,6 +33,22 @@ class FieldsImpl<T, R> extends MembersImpl<T, Field, FieldsImpl<T, R>> implement
             throw new UnsupportedOperationException("Cannot use SelectionMode.ALL on fields");
         }
         return super.mode(selectionMode);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Fields<T, R> assignableTo(R value) {
+        if (value == null) {
+            return match(f -> !f.getType().isPrimitive());
+        } else {
+            return assignableTo((Class<R>) value.getClass());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <NR extends R> Fields<T, NR> assignableTo(Class<NR> type) {
+        return (Fields<T, NR>) match(f -> f.getType().isAssignableFrom(type));
     }
 
     @Override

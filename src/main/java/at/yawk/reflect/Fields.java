@@ -86,6 +86,10 @@ public interface Fields<T, R> extends Members<T> {
     @Override
     Fields<T, R> statics();
 
+    Fields<T, R> assignableTo(R value);
+
+    <NR extends R> Fields<T, NR> assignableTo(Class<NR> type);
+
     /**
      * Get instance methods of the given object.
      */
