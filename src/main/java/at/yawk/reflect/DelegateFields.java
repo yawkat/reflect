@@ -73,4 +73,9 @@ public class DelegateFields<T, R> extends Delegate<T, Fields<T, R>> implements F
     public void each(Consumer<R> consumer) {
         handle.each(consumer);
     }
+
+    @Override
+    public Field handle() {
+        return handle.handle();
+    }
 }

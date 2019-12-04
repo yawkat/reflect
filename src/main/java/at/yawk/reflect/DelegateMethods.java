@@ -56,4 +56,9 @@ public class DelegateMethods<T, R> extends Delegate<T, Methods<T, R>> implements
     public void each(Consumer<R> consumer, Object... args) {
         handle.each(consumer, args);
     }
+
+    @Override
+    public Method handle() {
+        return handle.handle();
+    }
 }
