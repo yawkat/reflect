@@ -4,7 +4,7 @@
 
     <groupId>at.yawk.reflect</groupId>
     <artifactId>reflect</artifactId>
-    <version>1.1-SNAPSHOT</version>
+    <version>0.0.0</version>
 
     <name>reflect</name>
     <description>reflection utilities</description>
